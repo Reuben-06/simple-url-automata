@@ -1,143 +1,658 @@
-# URL Automata Project — DFA & NFA for Web URL Validation
+\# Simple URL Automata
 
-## 1. Project title
-Validation of a Defined Subset of Web URLs Using DFA and NFA
 
-## 2. Objective
-To demonstrate, for a real-world validation problem, how a DFA and an NFA
-can both be designed to recognize the **same formal language**, to verify
-that they actually do recognize the same language, and to critically
-compare their suitability for this problem. The URL validator is the
-*application*; the finite-automata design, implementation, testing, and
-comparison are the academic core.
 
-## 3. Problem definition
-Decide, syntactically, whether a given string is a well-formed URL under
-a **deliberately restricted, explicitly frozen subset** of real-world web
-URL syntax (see `TECHNICAL_PACKAGE.md` §4 for the full frozen
-specification). This is *syntactic* validation only — it never checks
-whether a domain exists, resolves, or is safe.
+A simple URL validator built using \*\*DFA and NFA\*\* as part of a Formal Languages and Automata Theory project.
 
-## 4. Defined language (summary)
-```
-scheme://domain(.label)*.tld(/path-segment)*/?
-```
-- `scheme` = `http` or `https`, lowercase only
-- `domain` labels: `[A-Za-z0-9]+(-[A-Za-z0-9]+)*` (case-insensitive, no
-  leading/trailing/consecutive hyphens)
-- `tld` (final label): one of `{com, org, net, edu, ai}`, **lowercase
-  only**, and the domain must have at least 2 components
-  (`label.tld`, not a bare TLD)
-- `path` segments: `[A-Za-z0-9_-]+`, no empty segments (`//` rejected)
-- ASCII-only. No ports, query strings, fragments, userinfo, IP
-  addresses, or percent-encoding.
 
-Full grammar, alphabet, and rationale: see `TECHNICAL_PACKAGE.md`.
 
-## 5. Files
-```
-URL_Automata_Project/
-├── automata.py       # single authoritative DFA + NFA + regex implementation
-├── tests.py           # comprehensive test suite (valid/invalid/boundary/unicode)
-├── equivalence.py      # subset construction + exhaustive product-state verification
-├── gen_tables.py       # generates transition tables & diagrams FROM automata.py
-├── demo.py             # interactive CLI + trace mode
-├── README.md
-├── TECHNICAL_PACKAGE.md
-├── diagrams/
-│   ├── dfa.mmd
-│   └── nfa.mmd
-└── output/
-    ├── dfa_transition_table.txt
-    ├── nfa_transition_table.txt
-    ├── test_output.txt
-    └── equivalence_output.txt
-```
+The project takes a restricted form of an HTTP/HTTPS URL and checks whether it belongs to the defined language. Both automata process the same input, and their results are compared with a regular expression implementation.
 
-## 6. Installation requirements
-None beyond a standard Python 3 interpreter (uses only the standard
-library: `re`, `collections`, `itertools`).
 
-## 7. How to run the demo
-```bash
-python demo.py
-python demo.py --trace     # also print DFA/NFA state-by-state traces
-```
 
-## Visualization
+\## What this project does
+
+
+
+\- Validates URLs using a DFA
+
+\- Validates the same URLs using an NFA
+
+\- Cross-checks the result using a regular expression
+
+\- Shows DFA and NFA execution traces
+
+\- Generates DFA/NFA path visualizations
+
+\- Generates transition tables
+
+\- Tests valid and invalid URLs
+
+\- Checks DFA/NFA equivalence
+
+
+
+\## URL Format
+
+
+
+The validator works with a deliberately restricted URL format:
+
+
+
+&#x20;   scheme://domain(.label)\*.tld(/path-segment)\*/?
+
+
+
+\### Supported Schemes
+
+
+
+\- `http`
+
+\- `https`
+
+
+
+The scheme must be written in lowercase.
+
+
+
+\### Domain Rules
+
+
+
+Domain labels can contain letters, digits and hyphens.
+
+
+
+A domain label:
+
+
+
+\- Cannot start with a hyphen
+
+\- Cannot end with a hyphen
+
+\- Cannot contain consecutive hyphens
+
+
+
+The domain must contain at least two components.
+
+
+
+Examples:
+
+
+
+&#x20;   example.com
+
+&#x20;   www.google.com
+
+
+
+\### Supported TLDs
+
+
+
+The following TLDs are supported:
+
+
+
+&#x20;   com
+
+&#x20;   org
+
+&#x20;   net
+
+&#x20;   edu
+
+&#x20;   ai
+
+
+
+The final TLD must be lowercase.
+
+
+
+\### Path Rules
+
+
+
+Path segments can contain:
+
+
+
+&#x20;   A-Z
+
+&#x20;   a-z
+
+&#x20;   0-9
+
+&#x20;   \_
+
+&#x20;   -
+
+
+
+Empty path segments are not allowed.
+
+
+
+For example:
+
+
+
+&#x20;   https://example.com/test
+
+
+
+is valid, while:
+
+
+
+&#x20;   https://example.com//test
+
+
+
+is rejected.
+
+
+
+\## Examples
+
+
+
+\### Valid URL
+
+
+
+&#x20;   https://www.google.com
+
+
+
+Expected result:
+
+
+
+&#x20;   DFA: ACCEPT
+
+&#x20;   NFA: ACCEPT
+
+&#x20;   Agreement: YES
+
+
+
+\### Invalid URL
+
+
+
+&#x20;   https://example.com//test
+
+
+
+Expected result:
+
+
+
+&#x20;   DFA: REJECT
+
+&#x20;   NFA: REJECT
+
+&#x20;   Agreement: YES
+
+
+
+\## Project Structure
+
+
+
+&#x20;   simple-url-automata/
+
+&#x20;   │
+
+&#x20;   ├── automata.py
+
+&#x20;   ├── demo.py
+
+&#x20;   ├── tests.py
+
+&#x20;   ├── equivalence.py
+
+&#x20;   ├── gen\_tables.py
+
+&#x20;   ├── visualizer.py
+
+&#x20;   │
+
+&#x20;   ├── README.md
+
+&#x20;   ├── TECHNICAL\_PACKAGE.md
+
+&#x20;   │
+
+&#x20;   ├── diagrams/
+
+&#x20;   │   ├── dfa.mmd
+
+&#x20;   │   ├── dfa\_preview.mmd
+
+&#x20;   │   ├── dfa\_path.mmd
+
+&#x20;   │   ├── dfa\_path.html
+
+&#x20;   │   ├── nfa.mmd
+
+&#x20;   │   ├── nfa\_path.mmd
+
+&#x20;   │   └── nfa\_path.html
+
+&#x20;   │
+
+&#x20;   └── output/
+
+&#x20;       ├── dfa\_transition\_table.txt
+
+&#x20;       ├── nfa\_transition\_table.txt
+
+&#x20;       ├── test\_output.txt
+
+&#x20;       └── equivalence\_output.txt
+
+
+
+\## Main Files
+
+
+
+\### automata.py
+
+
+
+Contains the DFA, NFA and regular expression implementation. This is the main source of the automaton logic.
+
+
+
+\### demo.py
+
+
+
+Provides the interactive command-line menu for validation, tracing and visualization.
+
+
+
+\### visualizer.py
+
+
+
+Generates Mermaid diagrams from the actual DFA/NFA execution path.
+
+
+
+\### tests.py
+
+
+
+Runs the test cases and checks the DFA, NFA and regex results against the expected results.
+
+
+
+\### equivalence.py
+
+
+
+Checks DFA/NFA equivalence using subset construction and product-state verification.
+
+
+
+\### gen\_tables.py
+
+
+
+Generates the DFA/NFA transition tables and structural diagrams.
+
+
+
+\### TECHNICAL\_PACKAGE.md
+
+
+
+Contains the detailed language specification, automaton design and verification details.
+
+
+
+\## Requirements
+
+
+
+The project uses the Python standard library, so no additional packages are required.
+
+
+
+Python 3 is required.
+
+
+
+\## Running the Project
+
+
+
+Run the main program:
+
+
+
+&#x20;   python demo.py
+
+
+
+For trace mode:
+
+
+
+&#x20;   python demo.py --trace
+
+
+
+The menu provides the following options:
+
+
+
+&#x20;   1. Validate URL
+
+&#x20;   2. Show DFA Trace
+
+&#x20;   3. Show NFA Trace
+
+&#x20;   4. Visualize DFA Path
+
+&#x20;   5. Visualize NFA Path
+
+&#x20;   6. Exit
+
+
+
+\## Testing
+
+
+
+Run the test suite:
+
+
+
+&#x20;   python tests.py
+
+
+
+The current test suite contains:
+
+
+
+&#x20;   79 test cases
+
+&#x20;   30 valid
+
+&#x20;   37 invalid
+
+&#x20;   8 boundary
+
+&#x20;   4 Unicode-regression
+
+
+
+Result:
+
+
+
+&#x20;   79 passed
+
+&#x20;   0 failed
+
+
+
+The test output is stored in:
+
+
+
+&#x20;   output/test\_output.txt
+
+
+
+\## DFA/NFA Equivalence
+
+
+
+The project also checks whether the DFA and NFA recognize the same language.
+
+
 
 Run:
 
-    python demo.py
 
-From the menu:
 
-    4. Visualize DFA Path
-    5. Visualize NFA Path
+&#x20;   python equivalence.py
 
-The selected URL is converted into a Mermaid state diagram and
-automatically opened in the default web browser.
 
-The generated visualization files are stored in:
 
-    diagrams/dfa_path.mmd
-    diagrams/nfa_path.mmd
+The verification uses:
 
-## 8. How to test a single URL
-Interactively via `demo.py`, or programmatically:
-```python
-from automata import validate_dfa, validate_nfa
-validate_dfa("https://www.google.com")   # True
-validate_nfa("https://www.google.com")   # True
-```
 
-## 9. How to run the complete test suite
-```bash
-python tests.py
-```
-Writes `output/test_output.txt` and exits non-zero on any failure.
 
-## 10. How to generate transition tables / diagrams
-```bash
-python gen_tables.py
-```
-Regenerates `output/dfa_transition_table.txt`,
-`output/nfa_transition_table.txt`, `diagrams/dfa.mmd`, `diagrams/nfa.mmd`
-directly from the current `automata.py` — never hand-edit these outputs.
+\- NFA to DFA subset construction
 
-## 11. How to run equivalence verification
-```bash
-python equivalence.py
-```
-Performs NFA→DFA' subset construction and an exhaustive
-product-state (DFA state × NFA active-set) BFS, reporting any mismatch.
-Writes `output/equivalence_output.txt`.
+\- Product-state BFS
 
-## 12. How to use trace mode
-Pass `--trace` to `demo.py`. Every URL entered will additionally print:
-- the DFA's single-state, step-by-step trace, and
-- the NFA's active-*set* history, visibly branching into multiple
-  simultaneously-active states during TLD matching.
 
-## 13. Expected output (example)
-```
-URL: https://www.google.com
 
-DFA: ACCEPT
-NFA: ACCEPT
-Agreement: YES
-```
-```
-URL: https://example.com//test
+The current verification produced:
 
-DFA: REJECT
-NFA: REJECT
-Agreement: YES
-```
 
-## 14. Limitations
-This project validates only the explicitly frozen subset of URL syntax.
-It deliberately excludes ports, query strings, fragments, userinfo,
-IPv4/IPv6 literals, percent-encoding, and internationalized domain names.
-See `TECHNICAL_PACKAGE.md` §8 for the full, documented list and the
-reasoning behind each exclusion.
+
+&#x20;   43 reachable subsets
+
+&#x20;   8 accepting subsets
+
+&#x20;   1,462 transitions explored
+
+
+
+&#x20;   46 reachable DFA/NFA pairs
+
+&#x20;   46/46 pairs checked
+
+&#x20;   0 mismatches
+
+
+
+The result is stored in:
+
+
+
+&#x20;   output/equivalence\_output.txt
+
+
+
+\## Transition Tables
+
+
+
+The transition tables can be generated from the automaton implementation using:
+
+
+
+&#x20;   python gen\_tables.py
+
+
+
+The generated tables are stored in:
+
+
+
+&#x20;   output/dfa\_transition\_table.txt
+
+&#x20;   output/nfa\_transition\_table.txt
+
+
+
+The structural DFA and NFA diagrams are also generated from the same implementation.
+
+
+
+\## Visualization
+
+
+
+The project can generate a visualization of the actual DFA or NFA execution path for a URL.
+
+
+
+Run:
+
+
+
+&#x20;   python demo.py
+
+
+
+Then select:
+
+
+
+&#x20;   4. Visualize DFA Path
+
+&#x20;   5. Visualize NFA Path
+
+
+
+The visualizer generates Mermaid state diagrams and HTML files in the `diagrams/` folder.
+
+
+
+The diagrams are based on the actual execution path of the selected URL.
+
+
+
+\## How the Validation Works
+
+
+
+The same URL is processed by both automata.
+
+
+
+&#x20;   URL
+
+&#x20;    │
+
+&#x20;    ├───────────────┐
+
+&#x20;    │               │
+
+&#x20;    ▼               ▼
+
+&#x20;   DFA              NFA
+
+&#x20;    │               │
+
+&#x20;    ▼               ▼
+
+&#x20;   ACCEPT/REJECT   ACCEPT/REJECT
+
+&#x20;    │               │
+
+&#x20;    └───────┬───────┘
+
+&#x20;            ▼
+
+&#x20;      Compare Results
+
+&#x20;            │
+
+&#x20;            ▼
+
+&#x20;        Agreement
+
+
+
+The regular expression implementation is also used as a cross-check during testing.
+
+
+
+\## Limitations
+
+
+
+This project validates a restricted URL language rather than the complete URL standard.
+
+
+
+The following are not supported:
+
+
+
+\- Port numbers
+
+\- Userinfo/authentication
+
+\- Query strings
+
+\- Fragments
+
+\- IPv4/IPv6 literal hosts
+
+\- Percent-encoding
+
+\- Internationalized/non-ASCII domain names
+
+\- TLDs outside `com`, `org`, `net`, `edu` and `ai`
+
+
+
+The automata perform syntax validation only.
+
+
+
+They do not check:
+
+
+
+\- Whether a domain exists
+
+\- Whether a server is reachable
+
+\- Whether a webpage exists
+
+\- Whether a URL is safe or malicious
+
+
+
+\## Purpose
+
+
+
+This project was developed to apply concepts from \*\*Formal Languages and Automata Theory\*\* to a practical URL validation problem.
+
+
+
+It demonstrates how the same defined language can be implemented using both a DFA and an NFA, tested against expected results, and checked for equivalence.
+
+
+
+For the complete technical specification and design details, see:
+
+
+
+&#x20;   TECHNICAL\_PACKAGE.md
+
+
+
+\## Author
+
+
+
+Formal Languages and Automata Theory Project
+
+
+
+Built using Python, DFA, NFA and regular expressions.
+
