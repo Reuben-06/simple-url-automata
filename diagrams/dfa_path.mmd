@@ -1,0 +1,86 @@
+stateDiagram-v2
+    direction TB
+
+    state "START\n[Q0]" as Q0
+    state "SCHEME: h\n[H]" as H
+    state "SCHEME: ht\n[HT]" as HT
+    state "SCHEME: htt\n[HTT]" as HTT
+    state "SCHEME: http\n[HTTP]" as HTTP
+    state "SCHEME: https\n[HTTPS]" as HTTPS
+    state "COLON\n[COLON]" as COLON
+    state "SLASH 1\n[SLASH1]" as SLASH1
+    state "DOMAIN START\n[SLASH2]" as SLASH2
+    state "DOMAIN LABEL\n[DOM,OK,X,False]\nno dot" as DOM_OK_X_False
+    state "DOMAIN LABEL START\n[DOM,START,0,True]\ndot seen" as DOM_START_0_True
+    state "DOMAIN / TLD PREFIX 1\n[DOM,OK,1,True]\ndot seen" as DOM_OK_1_True
+    state "DOMAIN / TLD PREFIX 2\n[DOM,OK,2,True]\ndot seen" as DOM_OK_2_True
+    state "DOMAIN / TLD PREFIX 3\n[DOM,OK,3,True]\ndot seen" as DOM_OK_3_True
+    state "PATH START\n[PATH_SEG_START]" as PATH_SEG_START
+    state "PATH SEGMENT\n[PATH_SEG]" as PATH_SEG
+
+    [*] --> Q0
+
+    Q0 --> H: 1. 'h'
+    H --> HT: 2. 't'
+    HT --> HTT: 3. 't'
+    HTT --> HTTP: 4. 'p'
+    HTTP --> HTTPS: 5. 's'
+    HTTPS --> COLON: 6. ':'
+    COLON --> SLASH1: 7. '/'
+    SLASH1 --> SLASH2: 8. '/'
+    SLASH2 --> DOM_OK_X_False: 9. 'l'
+    DOM_OK_X_False --> DOM_OK_X_False: 10. 'e'
+    DOM_OK_X_False --> DOM_OK_X_False: 11. 'e'
+    DOM_OK_X_False --> DOM_OK_X_False: 12. 't'
+    DOM_OK_X_False --> DOM_OK_X_False: 13. 'c'
+    DOM_OK_X_False --> DOM_OK_X_False: 14. 'o'
+    DOM_OK_X_False --> DOM_OK_X_False: 15. 'd'
+    DOM_OK_X_False --> DOM_OK_X_False: 16. 'e'
+    DOM_OK_X_False --> DOM_START_0_True: 17. '.'
+    DOM_START_0_True --> DOM_OK_1_True: 18. 'c'
+    DOM_OK_1_True --> DOM_OK_2_True: 19. 'o'
+    DOM_OK_2_True --> DOM_OK_3_True: 20. 'm'
+    DOM_OK_3_True --> PATH_SEG_START: 21. '/'
+    PATH_SEG_START --> PATH_SEG: 22. 'p'
+    PATH_SEG --> PATH_SEG: 23. 'r'
+    PATH_SEG --> PATH_SEG: 24. 'o'
+    PATH_SEG --> PATH_SEG: 25. 'b'
+    PATH_SEG --> PATH_SEG: 26. 'l'
+    PATH_SEG --> PATH_SEG: 27. 'e'
+    PATH_SEG --> PATH_SEG: 28. 'm'
+    PATH_SEG --> PATH_SEG: 29. 's'
+    PATH_SEG --> PATH_SEG: 30. 'e'
+    PATH_SEG --> PATH_SEG: 31. 't'
+    PATH_SEG --> PATH_SEG_START: 32. '/'
+
+    PATH_SEG_START --> ACCEPT
+    state "✓ ACCEPT\nInput fully consumed" as ACCEPT
+
+    classDef start fill:#e0f2fe,stroke:#0284c7,stroke-width:3px,color:#082f49
+    classDef protocol fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a
+    classDef domainStart fill:#fff7ed,stroke:#ea580c,stroke-width:3px,color:#7c2d12
+    classDef domain fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#78350f
+    classDef tld fill:#fef3c7,stroke:#b45309,stroke-width:3px,color:#78350f
+    classDef warning fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#7f1d1d
+    classDef path fill:#eef2ff,stroke:#4f46e5,stroke-width:2px,color:#312e81
+    classDef normal fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a
+    classDef accept fill:#dcfce7,stroke:#16a34a,stroke-width:4px,color:#14532d
+    classDef reject fill:#fee2e2,stroke:#dc2626,stroke-width:4px,color:#7f1d1d
+
+    class Q0 start
+    class H protocol
+    class HT protocol
+    class HTT protocol
+    class HTTP protocol
+    class HTTPS protocol
+    class COLON protocol
+    class SLASH1 protocol
+    class SLASH2 domainStart
+    class DOM_OK_X_False domain
+    class DOM_START_0_True domainStart
+    class DOM_OK_1_True tld
+    class DOM_OK_2_True tld
+    class DOM_OK_3_True tld
+    class PATH_SEG_START path
+    class PATH_SEG path
+    class ACCEPT accept

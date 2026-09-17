@@ -1,0 +1,134 @@
+stateDiagram-v2
+    direction TB
+
+    state "START\n[q0]\nstep 0" as N0_q0
+    state "SCHEME: h\n[h]\nstep 1" as N1_h
+    state "SCHEME: ht\n[ht]\nstep 2" as N2_ht
+    state "SCHEME: htt\n[htt]\nstep 3" as N3_htt
+    state "SCHEME: http\n[http]\nstep 4" as N4_http
+    state "SCHEME: https\n[https]\nstep 5" as N5_https
+    state "COLON\n[colon]\nstep 6" as N6_colon
+    state "DOMAIN START\n[slash1]\nstep 7" as N7_slash1
+    state "GENERIC LABEL START\n[g_start]\nstep 8" as N8_g_start
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 9" as N9_G_OK
+    state "FIRST-LABEL TLD CANDIDATE\n[T1_1]\nstep 9" as N9_T1_1
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 10" as N10_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 11" as N11_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 12" as N12_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 13" as N13_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 14" as N14_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 15" as N15_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 16" as N16_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 17" as N17_G_OK
+    state "AFTER DOMAIN DOT\n[g_start_dot]\nstep 18" as N18_g_start_dot
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 19" as N19_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 20" as N20_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 21" as N21_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 22" as N22_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 23" as N23_G_OK
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 24" as N24_G_OK
+    state "AFTER DOMAIN DOT\n[g_start_dot]\nstep 25" as N25_g_start_dot
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 26" as N26_G_OK
+    state "TLD CANDIDATE\n[T1]\nstep 26" as N26_T1
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 27" as N27_G_OK
+    state "TLD CANDIDATE\n[T2]\nstep 27" as N27_T2
+    state "GENERIC DOMAIN LABEL\n[G_OK]\nstep 28" as N28_G_OK
+    state "TLD CANDIDATE\n[T3]\nstep 28" as N28_T3
+    state "PATH START / ACCEPTING\n[PATH_SEG_START_ACCEPTING]\nstep 29" as N29_PATH_SEG_START_ACCEPTING
+    state "PATH SEGMENT\n[PATH_SEG]\nstep 30" as N30_PATH_SEG
+    state "PATH START\n[PATH_SEG_START]\nstep 31" as N31_PATH_SEG_START
+    state "PATH SEGMENT\n[PATH_SEG]\nstep 32" as N32_PATH_SEG
+    state "PATH SEGMENT\n[PATH_SEG]\nstep 33" as N33_PATH_SEG
+
+    [*] --> N0_q0
+
+    N0_q0 --> N1_h: 1. 'h'
+    N1_h --> N2_ht: 2. 't'
+    N2_ht --> N3_htt: 3. 't'
+    N3_htt --> N4_http: 4. 'p'
+    N4_http --> N5_https: 5. 's'
+    N5_https --> N6_colon: 6. ':'
+    N6_colon --> N7_slash1: 7. '/'
+    N7_slash1 --> N8_g_start: 8. '/'
+    N8_g_start --> N9_G_OK: 9. 'c'
+    N8_g_start --> N9_T1_1: 9. 'c'
+    N9_G_OK --> N10_G_OK: 10. 'l'
+    N10_G_OK --> N11_G_OK: 11. 'a'
+    N11_G_OK --> N12_G_OK: 12. 's'
+    N12_G_OK --> N13_G_OK: 13. 's'
+    N13_G_OK --> N14_G_OK: 14. 'r'
+    N14_G_OK --> N15_G_OK: 15. 'o'
+    N15_G_OK --> N16_G_OK: 16. 'o'
+    N16_G_OK --> N17_G_OK: 17. 'm'
+    N17_G_OK --> N18_g_start_dot: 18. '.'
+    N18_g_start_dot --> N19_G_OK: 19. 'g'
+    N19_G_OK --> N20_G_OK: 20. 'o'
+    N20_G_OK --> N21_G_OK: 21. 'o'
+    N21_G_OK --> N22_G_OK: 22. 'g'
+    N22_G_OK --> N23_G_OK: 23. 'l'
+    N23_G_OK --> N24_G_OK: 24. 'e'
+    N24_G_OK --> N25_g_start_dot: 25. '.'
+    N25_g_start_dot --> N26_G_OK: 26. 'c'
+    N25_g_start_dot --> N26_T1: 26. 'c'
+    N26_G_OK --> N27_G_OK: 27. 'o'
+    N26_T1 --> N27_T2: 27. 'o'
+    N27_G_OK --> N28_G_OK: 28. 'm'
+    N27_T2 --> N28_T3: 28. 'm'
+    N28_T3 --> N29_PATH_SEG_START_ACCEPTING: 29. '/'
+    N29_PATH_SEG_START_ACCEPTING --> N30_PATH_SEG: 30. 'h'
+    N30_PATH_SEG --> N31_PATH_SEG_START: 31. '/'
+    N31_PATH_SEG_START --> N32_PATH_SEG: 32. 's'
+    N32_PATH_SEG --> N33_PATH_SEG: 33. 't'
+
+    N33_PATH_SEG --> ACCEPT
+    state "✓ ACCEPT\nAt least one active state accepts" as ACCEPT
+
+    classDef start fill:#ecfdf5,stroke:#059669,stroke-width:3px,color:#064e3b
+    classDef protocol fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a
+    classDef domainStart fill:#fff7ed,stroke:#ea580c,stroke-width:3px,color:#7c2d12
+    classDef domain fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#78350f
+    classDef branch fill:#fdf2f8,stroke:#db2777,stroke-width:3px,color:#831843
+    classDef path fill:#eef2ff,stroke:#4f46e5,stroke-width:2px,color:#312e81
+    classDef normal fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a
+    classDef accept fill:#dcfce7,stroke:#16a34a,stroke-width:4px,color:#14532d
+    classDef reject fill:#fee2e2,stroke:#dc2626,stroke-width:4px,color:#7f1d1d
+
+    class N0_q0 start
+    class N1_h protocol
+    class N2_ht protocol
+    class N3_htt protocol
+    class N4_http protocol
+    class N5_https protocol
+    class N6_colon protocol
+    class N7_slash1 domainStart
+    class N8_g_start domain
+    class N9_T1_1 branch
+    class N9_G_OK domain
+    class N10_G_OK domain
+    class N11_G_OK domain
+    class N12_G_OK domain
+    class N13_G_OK domain
+    class N14_G_OK domain
+    class N15_G_OK domain
+    class N16_G_OK domain
+    class N17_G_OK domain
+    class N18_g_start_dot domain
+    class N19_G_OK domain
+    class N20_G_OK domain
+    class N21_G_OK domain
+    class N22_G_OK domain
+    class N23_G_OK domain
+    class N24_G_OK domain
+    class N25_g_start_dot domain
+    class N26_T1 branch
+    class N26_G_OK domain
+    class N27_T2 branch
+    class N27_G_OK domain
+    class N28_G_OK domain
+    class N28_T3 branch
+    class N29_PATH_SEG_START_ACCEPTING path
+    class N30_PATH_SEG path
+    class N31_PATH_SEG_START path
+    class N32_PATH_SEG path
+    class N33_PATH_SEG path
+    class ACCEPT accept

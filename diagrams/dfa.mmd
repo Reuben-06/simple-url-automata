@@ -1,0 +1,25 @@
+stateDiagram-v2
+    [*] --> Q0
+    Q0 --> H: h
+    H --> HT: t
+    HT --> HTT: t
+    HTT --> HTTP: p
+    HTTP --> HTTPS: s
+    HTTP --> COLON: :
+    HTTPS --> COLON: :
+    COLON --> SLASH1: /
+    SLASH1 --> SLASH2: /
+    SLASH2 --> DOM_GROUP: [a-z0-9]
+    state DOM_GROUP {
+        [*] --> DomainProcessing : "33 composite (label_validity,trie_node,seen_dot) states -- see dfa_transition_table.txt"
+        DomainProcessing --> DomainProcessing: letter/digit/hyphen/dot
+    }
+    DOM_GROUP --> PATH_SEG_START: / [only if seen_dot & trie_node is accepting TLD]
+    DOM_GROUP --> [*]: end-of-input [only if seen_dot & trie_node is accepting TLD]
+    PATH_SEG_START --> PATH_SEG: [a-zA-Z0-9_-]
+    PATH_SEG --> PATH_SEG_START: /
+    PATH_SEG --> PATH_SEG: [a-zA-Z0-9_-]
+    PATH_SEG_START --> [*]
+    PATH_SEG --> [*]
+    DOM_GROUP --> DEAD: invalid char / bad hyphen / non-TLD end
+    DEAD --> DEAD: any

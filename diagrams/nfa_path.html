@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+>
+
+<title>NFA Execution</title>
+
+<script type="module">
+
+import mermaid from
+"https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+mermaid.initialize({
+    startOnLoad: true,
+    theme: "base",
+    securityLevel: "loose",
+
+    themeVariables: {
+        fontFamily: "Inter, Arial, sans-serif",
+        fontSize: "16px",
+
+        primaryColor: "#ffffff",
+        primaryTextColor: "#0f172a",
+        primaryBorderColor: "#64748b",
+
+        lineColor: "#475569",
+
+        secondaryColor: "#f8fafc",
+        tertiaryColor: "#f1f5f9",
+
+        background: "#f8fafc"
+    },
+
+    state: {
+        useMaxWidth: false
+    }
+});
+
+</script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+.page {
+    width: min(1500px, calc(100% - 40px));
+    margin: auto;
+    padding: 40px 0 60px;
+}
+
+.topbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 6px 0 0;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+}
+
+.subtitle {
+    color: #64748b;
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+.result {
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .07em;
+}
+
+.result.accepted {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.result.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.url-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+}
+
+.url-label {
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 7px;
+}
+
+.url {
+    font-family:
+        "Cascadia Code",
+        Consolas,
+        monospace;
+
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+.workspace {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 32px;
+    overflow: auto;
+}
+
+.workspace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.workspace-title {
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.workspace-note {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.mermaid {
+    display: flex;
+    justify-content: center;
+    min-width: max-content;
+}
+
+.section {
+    margin-top: 22px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.section-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.section-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #64748b;
+    background: #f8fafc;
+}
+
+th,
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+td {
+    font-size: 13px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+code {
+    font-family:
+        "Cascadia Code",
+        Consolas,
+        monospace;
+
+    background: #f1f5f9;
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 20px;
+    color: #475569;
+    font-size: 12px;
+}
+
+.legend span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.start-dot {
+    background: #0284c7;
+}
+
+.protocol-dot {
+    background: #64748b;
+}
+
+.domain-dot {
+    background: #d97706;
+}
+
+.branch-dot {
+    background: #db2777;
+}
+
+.path-dot {
+    background: #4f46e5;
+}
+
+.accept-dot {
+    background: #16a34a;
+}
+
+@media (max-width: 700px) {
+
+    .page {
+        width: min(100% - 18px, 1500px);
+        padding-top: 22px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .workspace {
+        padding: 18px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="topbar">
+
+        <div>
+
+            <div class="eyebrow">
+                URL Automata Visualizer
+            </div>
+
+            <h1>NFA Execution</h1>
+
+            <div class="subtitle">
+                The active-state set may contain multiple states when nondeterministic branching occurs.
+            </div>
+
+        </div>
+
+        <div class="result accepted">
+            ACCEPTED
+        </div>
+
+    </div>
+
+    <div class="url-card">
+
+        <div class="url-label">
+            Current input
+        </div>
+
+        <div class="url">
+            https://classroom.google.com/h/st
+        </div>
+
+    </div>
+
+    <div class="workspace">
+
+        <div class="workspace-header">
+
+            <div>
+
+                <div class="workspace-title">
+                    Actual Execution Path
+                </div>
+
+                <div class="workspace-note">
+                    Every node and transition below was generated
+                    from this URL's real execution trace.
+                </div>
+
+            </div>
+
+        </div>
+
+        <pre class="mermaid">stateDiagram-v2
+    direction TB
+
+    state "START\\n[q0]\\nstep 0" as N0_q0
+    state "SCHEME: h\\n[h]\\nstep 1" as N1_h
+    state "SCHEME: ht\\n[ht]\\nstep 2" as N2_ht
+    state "SCHEME: htt\\n[htt]\\nstep 3" as N3_htt
+    state "SCHEME: http\\n[http]\\nstep 4" as N4_http
+    state "SCHEME: https\\n[https]\\nstep 5" as N5_https
+    state "COLON\\n[colon]\\nstep 6" as N6_colon
+    state "DOMAIN START\\n[slash1]\\nstep 7" as N7_slash1
+    state "GENERIC LABEL START\\n[g_start]\\nstep 8" as N8_g_start
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 9" as N9_G_OK
+    state "FIRST-LABEL TLD CANDIDATE\\n[T1_1]\\nstep 9" as N9_T1_1
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 10" as N10_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 11" as N11_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 12" as N12_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 13" as N13_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 14" as N14_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 15" as N15_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 16" as N16_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 17" as N17_G_OK
+    state "AFTER DOMAIN DOT\\n[g_start_dot]\\nstep 18" as N18_g_start_dot
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 19" as N19_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 20" as N20_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 21" as N21_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 22" as N22_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 23" as N23_G_OK
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 24" as N24_G_OK
+    state "AFTER DOMAIN DOT\\n[g_start_dot]\\nstep 25" as N25_g_start_dot
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 26" as N26_G_OK
+    state "TLD CANDIDATE\\n[T1]\\nstep 26" as N26_T1
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 27" as N27_G_OK
+    state "TLD CANDIDATE\\n[T2]\\nstep 27" as N27_T2
+    state "GENERIC DOMAIN LABEL\\n[G_OK]\\nstep 28" as N28_G_OK
+    state "TLD CANDIDATE\\n[T3]\\nstep 28" as N28_T3
+    state "PATH START / ACCEPTING\\n[PATH_SEG_START_ACCEPTING]\\nstep 29" as N29_PATH_SEG_START_ACCEPTING
+    state "PATH SEGMENT\\n[PATH_SEG]\\nstep 30" as N30_PATH_SEG
+    state "PATH START\\n[PATH_SEG_START]\\nstep 31" as N31_PATH_SEG_START
+    state "PATH SEGMENT\\n[PATH_SEG]\\nstep 32" as N32_PATH_SEG
+    state "PATH SEGMENT\\n[PATH_SEG]\\nstep 33" as N33_PATH_SEG
+
+    [*] --> N0_q0
+
+    N0_q0 --> N1_h: 1. 'h'
+    N1_h --> N2_ht: 2. 't'
+    N2_ht --> N3_htt: 3. 't'
+    N3_htt --> N4_http: 4. 'p'
+    N4_http --> N5_https: 5. 's'
+    N5_https --> N6_colon: 6. ':'
+    N6_colon --> N7_slash1: 7. '/'
+    N7_slash1 --> N8_g_start: 8. '/'
+    N8_g_start --> N9_G_OK: 9. 'c'
+    N8_g_start --> N9_T1_1: 9. 'c'
+    N9_G_OK --> N10_G_OK: 10. 'l'
+    N10_G_OK --> N11_G_OK: 11. 'a'
+    N11_G_OK --> N12_G_OK: 12. 's'
+    N12_G_OK --> N13_G_OK: 13. 's'
+    N13_G_OK --> N14_G_OK: 14. 'r'
+    N14_G_OK --> N15_G_OK: 15. 'o'
+    N15_G_OK --> N16_G_OK: 16. 'o'
+    N16_G_OK --> N17_G_OK: 17. 'm'
+    N17_G_OK --> N18_g_start_dot: 18. '.'
+    N18_g_start_dot --> N19_G_OK: 19. 'g'
+    N19_G_OK --> N20_G_OK: 20. 'o'
+    N20_G_OK --> N21_G_OK: 21. 'o'
+    N21_G_OK --> N22_G_OK: 22. 'g'
+    N22_G_OK --> N23_G_OK: 23. 'l'
+    N23_G_OK --> N24_G_OK: 24. 'e'
+    N24_G_OK --> N25_g_start_dot: 25. '.'
+    N25_g_start_dot --> N26_G_OK: 26. 'c'
+    N25_g_start_dot --> N26_T1: 26. 'c'
+    N26_G_OK --> N27_G_OK: 27. 'o'
+    N26_T1 --> N27_T2: 27. 'o'
+    N27_G_OK --> N28_G_OK: 28. 'm'
+    N27_T2 --> N28_T3: 28. 'm'
+    N28_T3 --> N29_PATH_SEG_START_ACCEPTING: 29. '/'
+    N29_PATH_SEG_START_ACCEPTING --> N30_PATH_SEG: 30. 'h'
+    N30_PATH_SEG --> N31_PATH_SEG_START: 31. '/'
+    N31_PATH_SEG_START --> N32_PATH_SEG: 32. 's'
+    N32_PATH_SEG --> N33_PATH_SEG: 33. 't'
+
+    N33_PATH_SEG --> ACCEPT
+    state "✓ ACCEPT\\nAt least one active state accepts" as ACCEPT
+
+    classDef start fill:#ecfdf5,stroke:#059669,stroke-width:3px,color:#064e3b
+    classDef protocol fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a
+    classDef domainStart fill:#fff7ed,stroke:#ea580c,stroke-width:3px,color:#7c2d12
+    classDef domain fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#78350f
+    classDef branch fill:#fdf2f8,stroke:#db2777,stroke-width:3px,color:#831843
+    classDef path fill:#eef2ff,stroke:#4f46e5,stroke-width:2px,color:#312e81
+    classDef normal fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a
+    classDef accept fill:#dcfce7,stroke:#16a34a,stroke-width:4px,color:#14532d
+    classDef reject fill:#fee2e2,stroke:#dc2626,stroke-width:4px,color:#7f1d1d
+
+    class N0_q0 start
+    class N1_h protocol
+    class N2_ht protocol
+    class N3_htt protocol
+    class N4_http protocol
+    class N5_https protocol
+    class N6_colon protocol
+    class N7_slash1 domainStart
+    class N8_g_start domain
+    class N9_T1_1 branch
+    class N9_G_OK domain
+    class N10_G_OK domain
+    class N11_G_OK domain
+    class N12_G_OK domain
+    class N13_G_OK domain
+    class N14_G_OK domain
+    class N15_G_OK domain
+    class N16_G_OK domain
+    class N17_G_OK domain
+    class N18_g_start_dot domain
+    class N19_G_OK domain
+    class N20_G_OK domain
+    class N21_G_OK domain
+    class N22_G_OK domain
+    class N23_G_OK domain
+    class N24_G_OK domain
+    class N25_g_start_dot domain
+    class N26_T1 branch
+    class N26_G_OK domain
+    class N27_T2 branch
+    class N27_G_OK domain
+    class N28_G_OK domain
+    class N28_T3 branch
+    class N29_PATH_SEG_START_ACCEPTING path
+    class N30_PATH_SEG path
+    class N31_PATH_SEG_START path
+    class N32_PATH_SEG path
+    class N33_PATH_SEG path
+    class ACCEPT accept</pre>
+
+        <div class="legend">
+
+            <span>
+                <i class="dot start-dot"></i>
+                Start
+            </span>
+
+            <span>
+                <i class="dot protocol-dot"></i>
+                Protocol
+            </span>
+
+            <span>
+                <i class="dot domain-dot"></i>
+                Domain / TLD
+            </span>
+
+            
+                <span>
+                    <i class="dot branch-dot"></i>
+                    NFA TLD branch
+                </span>
+                
+
+            <span>
+                <i class="dot path-dot"></i>
+                Path
+            </span>
+
+            <span>
+                <i class="dot accept-dot"></i>
+                Accepted
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <h2>NFA Active-State Transition Trace</h2>
+
+            <p>
+                Actual internal transition states for this input.
+            </p>
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Step</th>
+                        <th>Input</th>
+                        <th>From / Active Before</th>
+                        <th></th>
+                        <th>To / Active After</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    
+            <tr>
+                <td>1</td>
+                <td><code>h</code></td>
+                <td><code>{q0}</code></td>
+                <td>→</td>
+                <td><code>{h}</code></td>
+            </tr>
+            
+            <tr>
+                <td>2</td>
+                <td><code>t</code></td>
+                <td><code>{h}</code></td>
+                <td>→</td>
+                <td><code>{ht}</code></td>
+            </tr>
+            
+            <tr>
+                <td>3</td>
+                <td><code>t</code></td>
+                <td><code>{ht}</code></td>
+                <td>→</td>
+                <td><code>{htt}</code></td>
+            </tr>
+            
+            <tr>
+                <td>4</td>
+                <td><code>p</code></td>
+                <td><code>{htt}</code></td>
+                <td>→</td>
+                <td><code>{http}</code></td>
+            </tr>
+            
+            <tr>
+                <td>5</td>
+                <td><code>s</code></td>
+                <td><code>{http}</code></td>
+                <td>→</td>
+                <td><code>{https}</code></td>
+            </tr>
+            
+            <tr>
+                <td>6</td>
+                <td><code>:</code></td>
+                <td><code>{https}</code></td>
+                <td>→</td>
+                <td><code>{colon}</code></td>
+            </tr>
+            
+            <tr>
+                <td>7</td>
+                <td><code>/</code></td>
+                <td><code>{colon}</code></td>
+                <td>→</td>
+                <td><code>{slash1}</code></td>
+            </tr>
+            
+            <tr>
+                <td>8</td>
+                <td><code>/</code></td>
+                <td><code>{slash1}</code></td>
+                <td>→</td>
+                <td><code>{g_start}</code></td>
+            </tr>
+            
+            <tr>
+                <td>9</td>
+                <td><code>c</code></td>
+                <td><code>{g_start}</code></td>
+                <td>→</td>
+                <td><code>{G_OK, T1_1}</code></td>
+            </tr>
+            
+            <tr>
+                <td>10</td>
+                <td><code>l</code></td>
+                <td><code>{G_OK, T1_1}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>11</td>
+                <td><code>a</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>12</td>
+                <td><code>s</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>13</td>
+                <td><code>s</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>14</td>
+                <td><code>r</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>15</td>
+                <td><code>o</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>16</td>
+                <td><code>o</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>17</td>
+                <td><code>m</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>18</td>
+                <td><code>.</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{g_start_dot}</code></td>
+            </tr>
+            
+            <tr>
+                <td>19</td>
+                <td><code>g</code></td>
+                <td><code>{g_start_dot}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>20</td>
+                <td><code>o</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>21</td>
+                <td><code>o</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>22</td>
+                <td><code>g</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>23</td>
+                <td><code>l</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>24</td>
+                <td><code>e</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{G_OK}</code></td>
+            </tr>
+            
+            <tr>
+                <td>25</td>
+                <td><code>.</code></td>
+                <td><code>{G_OK}</code></td>
+                <td>→</td>
+                <td><code>{g_start_dot}</code></td>
+            </tr>
+            
+            <tr>
+                <td>26</td>
+                <td><code>c</code></td>
+                <td><code>{g_start_dot}</code></td>
+                <td>→</td>
+                <td><code>{G_OK, T1}</code></td>
+            </tr>
+            
+            <tr>
+                <td>27</td>
+                <td><code>o</code></td>
+                <td><code>{G_OK, T1}</code></td>
+                <td>→</td>
+                <td><code>{G_OK, T2}</code></td>
+            </tr>
+            
+            <tr>
+                <td>28</td>
+                <td><code>m</code></td>
+                <td><code>{G_OK, T2}</code></td>
+                <td>→</td>
+                <td><code>{G_OK, T3}</code></td>
+            </tr>
+            
+            <tr>
+                <td>29</td>
+                <td><code>/</code></td>
+                <td><code>{G_OK, T3}</code></td>
+                <td>→</td>
+                <td><code>{PATH_SEG_START_ACCEPTING}</code></td>
+            </tr>
+            
+            <tr>
+                <td>30</td>
+                <td><code>h</code></td>
+                <td><code>{PATH_SEG_START_ACCEPTING}</code></td>
+                <td>→</td>
+                <td><code>{PATH_SEG}</code></td>
+            </tr>
+            
+            <tr>
+                <td>31</td>
+                <td><code>/</code></td>
+                <td><code>{PATH_SEG}</code></td>
+                <td>→</td>
+                <td><code>{PATH_SEG_START}</code></td>
+            </tr>
+            
+            <tr>
+                <td>32</td>
+                <td><code>s</code></td>
+                <td><code>{PATH_SEG_START}</code></td>
+                <td>→</td>
+                <td><code>{PATH_SEG}</code></td>
+            </tr>
+            
+            <tr>
+                <td>33</td>
+                <td><code>t</code></td>
+                <td><code>{PATH_SEG}</code></td>
+                <td>→</td>
+                <td><code>{PATH_SEG}</code></td>
+            </tr>
+            
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

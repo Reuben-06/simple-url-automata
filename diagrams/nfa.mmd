@@ -1,0 +1,33 @@
+stateDiagram-v2
+    [*] --> q0
+    q0 --> h: h
+    h --> ht: t
+    ht --> htt: t
+    htt --> http: p
+    http --> https: s
+    http --> colon: :
+    https --> colon: :
+    colon --> slash1: /
+    slash1 --> g_start: /
+    g_start --> G_OK: alnum
+    g_start --> T1_x: alnum (if first char of a TLD)
+    note right of g_start: FORK -- genuine nondeterminism:\nsame input char leads to TWO\nactive states simultaneously
+    G_OK --> G_OK: alnum
+    G_OK --> G_HYP: -
+    G_HYP --> G_OK: alnum
+    G_OK --> g_start_dot: .
+    T1_x --> T1_x: alnum (still matching TLD prefix)
+    T1_x --> g_start_dot: . (first label only, never accepting alone)
+    g_start_dot --> G_OK: alnum
+    g_start_dot --> T_x: alnum (if first char of a TLD)
+    T_x --> T_x: alnum (still matching TLD prefix)
+    T_x --> g_start_dot: . (interior label matched a TLD)
+    T_x --> PATH_ACCEPT: / [only from a TLD-ACCEPTING trie node]
+    T_x --> [*]: end-of-input [only from a TLD-ACCEPTING trie node]
+    PATH_ACCEPT --> PATH_SEG: alnum/-/_
+    PATH_ACCEPT --> [*]
+    PATH_SEG --> PATH_SEG: alnum/-/_
+    PATH_SEG --> PATH_SEG_START: /
+    PATH_SEG_START --> PATH_SEG: alnum/-/_
+    PATH_SEG --> [*]
+    PATH_SEG_START --> [*]

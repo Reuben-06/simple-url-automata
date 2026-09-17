@@ -1,0 +1,74 @@
+NFA TRANSITION TABLE (generated from automata.py)
+======================================================================
+Start state: q0
+Accepting states (8): PATH_SEG, PATH_SEG_START, PATH_SEG_START_ACCEPTING, T12, T14, T3, T6, T9
+Total reachable NFA states: 43
+----------------------------------------------------------------------
+G_HYP                  a-z*->{G_OK}  A->{G_OK}  5->{G_OK}
+G_OK                   a-z*->{G_OK}  A->{G_OK}  5->{G_OK}  .->{g_start_dot}  -->{G_HYP}
+PATH_SEG               a-z*->{PATH_SEG}  A->{PATH_SEG}  5->{PATH_SEG}  /->{PATH_SEG_START}  -->{PATH_SEG}  _->{PATH_SEG}
+PATH_SEG_START         a-z*->{PATH_SEG}  A->{PATH_SEG}  5->{PATH_SEG}  -->{PATH_SEG}  _->{PATH_SEG}
+PATH_SEG_START_ACCEPTING a-z*->{PATH_SEG}  A->{PATH_SEG}  5->{PATH_SEG}  -->{PATH_SEG}  _->{PATH_SEG}
+T1                     a-z*->VARIES
+    * per-letter detail: o->{T2}
+T10                    a-z*->VARIES
+    * per-letter detail: d->{T11}
+T11                    a-z*->VARIES
+    * per-letter detail: u->{T12}
+T12                    a-z*->{}  /->{PATH_SEG_START_ACCEPTING}  .->{g_start_dot}
+T13                    a-z*->VARIES
+    * per-letter detail: i->{T14}
+T14                    a-z*->{}  /->{PATH_SEG_START_ACCEPTING}  .->{g_start_dot}
+T1_1                   a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: o->{T1_2}
+T1_10                  a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: d->{T1_11}
+T1_11                  a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: u->{T1_12}
+T1_12                  a-z*->{}  .->{g_start_dot}
+T1_13                  a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: i->{T1_14}
+T1_14                  a-z*->{}  .->{g_start_dot}
+T1_2                   a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: m->{T1_3}
+T1_3                   a-z*->{}  .->{g_start_dot}
+T1_4                   a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: r->{T1_5}
+T1_5                   a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: g->{T1_6}
+T1_6                   a-z*->{}  .->{g_start_dot}
+T1_7                   a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: e->{T1_8}
+T1_8                   a-z*->VARIES  .->{g_start_dot}
+    * per-letter detail: t->{T1_9}
+T1_9                   a-z*->{}  .->{g_start_dot}
+T2                     a-z*->VARIES
+    * per-letter detail: m->{T3}
+T3                     a-z*->{}  /->{PATH_SEG_START_ACCEPTING}  .->{g_start_dot}
+T4                     a-z*->VARIES
+    * per-letter detail: r->{T5}
+T5                     a-z*->VARIES
+    * per-letter detail: g->{T6}
+T6                     a-z*->{}  /->{PATH_SEG_START_ACCEPTING}  .->{g_start_dot}
+T7                     a-z*->VARIES
+    * per-letter detail: e->{T8}
+T8                     a-z*->VARIES
+    * per-letter detail: t->{T9}
+T9                     a-z*->{}  /->{PATH_SEG_START_ACCEPTING}  .->{g_start_dot}
+colon                  a-z*->{}  /->{slash1}
+g_start                a-z*->VARIES  A->{G_OK}  5->{G_OK}
+    * per-letter detail: a->{G_OK,T1_13}, b->{G_OK}, c->{G_OK,T1_1}, d->{G_OK}, e->{G_OK,T1_10}, f->{G_OK}, g->{G_OK}, h->{G_OK}, i->{G_OK}, j->{G_OK}, k->{G_OK}, l->{G_OK}, m->{G_OK}, n->{G_OK,T1_7}, o->{G_OK,T1_4}, p->{G_OK}, q->{G_OK}, r->{G_OK}, s->{G_OK}, t->{G_OK}, u->{G_OK}, v->{G_OK}, w->{G_OK}, x->{G_OK}, y->{G_OK}, z->{G_OK}
+g_start_dot            a-z*->VARIES  A->{G_OK}  5->{G_OK}
+    * per-letter detail: a->{G_OK,T13}, b->{G_OK}, c->{G_OK,T1}, d->{G_OK}, e->{G_OK,T10}, f->{G_OK}, g->{G_OK}, h->{G_OK}, i->{G_OK}, j->{G_OK}, k->{G_OK}, l->{G_OK}, m->{G_OK}, n->{G_OK,T7}, o->{G_OK,T4}, p->{G_OK}, q->{G_OK}, r->{G_OK}, s->{G_OK}, t->{G_OK}, u->{G_OK}, v->{G_OK}, w->{G_OK}, x->{G_OK}, y->{G_OK}, z->{G_OK}
+h                      a-z*->VARIES
+    * per-letter detail: t->{ht}
+ht                     a-z*->VARIES
+    * per-letter detail: t->{htt}
+htt                    a-z*->VARIES
+    * per-letter detail: p->{http}
+http                   a-z*->VARIES  :->{colon}
+    * per-letter detail: s->{https}
+https                  a-z*->{}  :->{colon}
+q0                     a-z*->VARIES
+    * per-letter detail: h->{h}
+slash1                 a-z*->{}  /->{g_start}

@@ -1,0 +1,15 @@
+============================================================
+URL AUTOMATA TEST SUITE - RESULTS
+============================================================
+VALID                               total= 30  passed= 30  failed=  0
+INVALID                             total= 37  passed= 37  failed=  0
+BOUNDARY                            total=  8  passed=  8  failed=  0
+UNICODE (all must reject)           total=  4  passed=  4  failed=  0
+------------------------------------------------------------
+Total tests: 79
+Passed: 79
+Failed: 0
+
+DFA/NFA mismatches: 0
+Regex mismatches: 0
+============================================================

@@ -1,0 +1,28 @@
+============================================================
+DFA / NFA EQUIVALENCE VERIFICATION
+============================================================
+
+-- Subset construction (NFA -> DFA') -- Section 33 --
+TLD set used: ['com', 'org', 'net', 'edu', 'ai']
+Individual NFA states encountered: 43
+Reachable subsets (states of DFA'): 43
+Accepting subsets: 8
+Transitions explored (|subsets| x |alphabet|): 1462
+
+-- Product-state exploration -- Section 34 --
+Alphabet size used for exploration: 34
+Reachable (DFA-state, NFA-active-set) pairs: 46
+Pairs checked for accept-status agreement: 46
+Mismatches found: 0
+
+RESULT: No mismatch found across every state pair reachable by the
+representative alphabet. Because both automata are finite-state and
+the representative alphabet was constructed so that every character
+in a given class provokes IDENTICAL transitions in both automata
+(see ALPHABET comment in this file), this exhaustively covers every
+distinguishable input class, not merely the curated test-suite
+examples. This establishes DFA and NFA accept the same language
+over the full (infinite) input domain, modulo the stated
+representative-alphabet argument -- it is NOT simply '50 examples
+passed' (Section 34 explicitly warns against that weaker claim).
+============================================================

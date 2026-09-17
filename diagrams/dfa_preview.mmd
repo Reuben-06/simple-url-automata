@@ -1,0 +1,33 @@
+stateDiagram-v2
+
+    [*] --> Q0
+    Q0 --> H: h
+    H --> HT: t
+    HT --> HTT: t
+    HTT --> HTTP: p
+
+    HTTP --> HTTPS: s
+    HTTP --> COLON: colon
+    HTTPS --> COLON: colon
+
+    COLON --> SLASH1: slash
+    SLASH1 --> SLASH2: slash
+
+    SLASH2 --> DOMAIN: alphanumeric
+
+    state DOMAIN {
+        [*] --> DomainProcessing
+        DomainProcessing --> DomainProcessing: letter, digit, hyphen, dot
+    }
+
+    DOMAIN --> PATH_START: valid TLD then slash
+    DOMAIN --> ACCEPT: valid TLD then end
+    DOMAIN --> DEAD: invalid character or bad hyphen or invalid TLD
+
+    PATH_START --> PATH_SEG: path character
+    PATH_START --> ACCEPT: trailing slash
+
+    PATH_SEG --> PATH_SEG: path character
+    PATH_SEG --> PATH_START: slash
+
+    DEAD --> DEAD: any
